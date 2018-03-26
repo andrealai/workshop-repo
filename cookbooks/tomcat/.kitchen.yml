@@ -1,0 +1,32 @@
+driver:
+  name: docker
+  private_key: "<%= ENV['HOME'] %>/.ssh/testkitchen_docker_id_rsa"
+  public_key: "<%= ENV['HOME'] %>/.ssh/testkitchen_docker_id_rsa.pub"
+
+provisioner:
+  name: chef_zero
+  always_update_cookbooks: true
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: centos-7.3
+    driver_config:
+      image: centos:7.3.1611
+      platform: rhel
+      run_command: /usr/lib/systemd/systemd
+      privileged: true
+      memory: 2048m
+      provision_command:
+        - yum -y install lsof which systemd-sysv initscripts wget net-tools openssl
+        - yum -y --enablerepo=extras install epel-release
+
+suites:
+  - name: default
+    run_list:
+      - recipe[tomcat::default]
+    verifier:
+      inspec_tests:
+        - test/smoke/default
+    attributes:
