@@ -2,7 +2,9 @@ driver:
   name: docker
   private_key: "<%= ENV['HOME'] %>/.ssh/testkitchen_docker_id_rsa"
   public_key: "<%= ENV['HOME'] %>/.ssh/testkitchen_docker_id_rsa.pub"
-
+  forward:
+    - 49160:8080
+    
 provisioner:
   name: chef_zero
   always_update_cookbooks: true
